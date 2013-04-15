@@ -85,7 +85,38 @@ class WeightedGraph():
 		G.V = V
 		G.E = E
 		return G
-		
+
+	def Kruskal(self):
+		V = [[Vertex(self.V[i].value)] for i in range(len(self.V))]
+		E = []
+		S = []
+		S[:] = self.E
+		while len(S) > 0 and len(V) > 1:
+			mini = None
+			for i in range(len(S)):
+				mini = i if mini == None or S[i].w < S[mini].w else mini
+			e = S.pop(mini)
+			tu = tv = None
+			for i in range(len(V)):
+				if e.u in V[i] and e.v in V[i]:
+					tu = tv = None
+					break
+				elif e.u in V[i]:
+					tu = i
+				elif e.v in V[i]:
+					tv = i
+			if tu != None and tv != None:
+				V[tu] += V[tv]
+				x = V[tu][V[tu].index(e.u)]
+				y = V[tu][V[tu].index(e.v)]
+				x.insert(y,e.w), y.insert(x,e.w)
+				E.append(Edge(x,y,e.w))
+				V.pop(tv)
+		V[:] = [v for tree in V for v in tree]
+		G = WeightedGraph()
+		G.V = V
+		G.E = E
+		return G
 		
 	def __repr__(self):
 		s = ''
@@ -109,7 +140,10 @@ if __name__=="__main__":
 	print(G)
 	print(G.E)
 	print("")
-	H = G.PrimJarnik()
+	# H = G.PrimJarnik()
+	# print(H)
+	# print(H.E)
+	H = G.Kruskal()
 	print(H)
 	print(H.E)
 	
