@@ -1,3 +1,5 @@
+from MinPriorityQueue import MinPriorityQueue
+
 inf = float("inf")
 white, grey, black = range(3)
 
@@ -5,6 +7,9 @@ class Vertex():
 	def __init__(self,value):
 		self.value = value
 		self.degree = 0
+		self.d = 0
+		self.colour = None
+		self.parent = None
 		self.adjacent = []
 		self.weights = []
 		
@@ -24,12 +29,31 @@ class Vertex():
 		self.adjacent.remove(u)
 		self.degree -= 1
 		return True
+		
+	def weight(self,u):
+		if u in self.adjacent:
+			return self.weights[self.adjacent.index(u)]
 	
 	def __eq__(self,other):
 		return other != None and self.value == other.value
+	
+	def __ne__(self,other):
+		return other == None or self.value != other.value
 		
+	def __lt__(self,other):
+		return other != None and self.d < other.d
+	
+	def __le__(self,other):
+		return other != None and self.d <= other.d
+	
+	def __gt__(self,other):
+		return other != None and self.d > other.d
+	
+	def __ge__(self,other):
+		return other != None and self.d >= other.d
+	
 	def __repr__(self):
-		s = str(self.value) + ': '
+		s = str(self.value) + '(' + str(self.d) + '): '
 		if len(self.adjacent) == 0:
 			return s
 		s += '['
@@ -52,22 +76,27 @@ class Edge():
 		return "(" + str(self.u.value) + ', ' + str(self.v.value) + ', ' + str(self.w) + ')'
 		
 class WeightedGraph():
-	def __init__(self,values=[None]):
-		self.V = [Vertex(values[i]) for i in range(len(values))]
+	def __init__(self):
+		self.V = []
 		self.E = []
 	
 	def edge_count(self):
 		return len(self.E)
 	
 	def insert(self,m,n,w):
-		if self.V[n].insert(self.V[m],w) and self.V[m].insert(self.V[n],w):
-			self.E.append(Edge(self.V[m], self.V[n], w))
+		u, v = self.V[self.V.index(m)], self.V[self.V.index(n)]
+		if u.insert(v,w) and v.insert(u,w):
+			self.E.append(Edge(u, v, w))
+	
+	def add(self,v):
+		if v not in self.V:
+			self.V.append(v)
 	
 	def delete(self,m,n):
-		e = Edge(self.V[m], self.V[n], self.V[m].weights[self.V[m].adjacent.index(self.V[n])])
-		if self.V[n].delete(self.V[m]) and self.V[m].delete(self.V[n]):
-			self.E.remove(e)
-			
+		u, v = self.V[self.V.index(m)], self.V[self.V.index(n)]
+		if u.delete(v):
+			self.E.remove(Edge(u, v, u.weight(v)))
+	
 	def PrimJarnik(self):
 		V = []
 		E = []
@@ -126,23 +155,26 @@ class WeightedGraph():
 		return s
 		
 if __name__=="__main__":
-	G = WeightedGraph(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'])
-	G.insert(0,1,6)
-	G.insert(0,5,12)
-	G.insert(1,5,5)
-	G.insert(1,2,14)
-	G.insert(1,3,7)
-	G.insert(2,3,3)
-	G.insert(3,4,10)
-	G.insert(4,5,8)
-	G.insert(4,7,15)
-	G.insert(5,6,9)
+	v = [Vertex('A'), Vertex('B'), Vertex('C'), Vertex('D'), Vertex('E'), Vertex('F'), Vertex('G'), Vertex('H')]
+	G = WeightedGraph()
+	for i in v:
+		G.add(i)
+	G.insert(v[0],v[1],6)
+	G.insert(v[0],v[5],12)
+	G.insert(v[1],v[5],5)
+	G.insert(v[1],v[2],14)
+	G.insert(v[1],v[3],7)
+	G.insert(v[2],v[3],3)
+	G.insert(v[3],v[4],10)
+	G.insert(v[4],v[5],8)
+	G.insert(v[4],v[7],15)
+	G.insert(v[5],v[6],9)
 	print(G)
 	print(G.E)
 	print("")
-	# H = G.PrimJarnik()
-	# print(H)
-	# print(H.E)
+	H = G.PrimJarnik()
+	print(H)
+	print(H.E)
 	H = G.Kruskal()
 	print(H)
 	print(H.E)
