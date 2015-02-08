@@ -1,4 +1,4 @@
-# ECE 250 - DATA STRUCTURES & ALGORITHMS
+# ECE 250 - Data Structures & Algorithms
 
 An implementation in Python of all the data structures & algorithms taught in the ECE 250 course at UWaterloo.
 
