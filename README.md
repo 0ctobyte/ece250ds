@@ -22,4 +22,4 @@ An implementation in Python of all the data structures & algorithms taught in th
 - Binary Tree Algorithms (binary search, max, min, predecessor, successor, pre/post/in-order traversals etc.)
 - Graph Algorithms (breadth/depth first search/traversal, insert, delete etc.)
 - Hash Table Algorithms (linear probing, chaining etc.)
-- Sorting Algorithms (counting sort, quick sort, radix sort)
+- Sorting Algorithms (counting sort, quick sort, radix sort, merge sort)
